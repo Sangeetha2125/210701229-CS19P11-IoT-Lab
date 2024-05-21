@@ -41,7 +41,7 @@ void waterLevelMonitor()
 {
   long duration;
   int distance;
-  const int thresholdDistance = 2;
+  const int thresholdDistance = 4;
   digitalWrite(trigger, LOW);
   delayMicroseconds(2);
   digitalWrite(trigger, HIGH);
@@ -54,12 +54,10 @@ void waterLevelMonitor()
   Serial.print(distance);
   Serial.println(" cm");
   if (distance <= thresholdDistance) {
-    digitalWrite(relay, HIGH);
-    Blynk.virtualWrite(V2, 1);
+    digitalWrite(relay, LOW);
     Serial.println("Water level high: Pump OFF");
   } else {
-    digitalWrite(relay, LOW);
-    Blynk.virtualWrite(V2, 0);
+    digitalWrite(relay, HIGH);
     Serial.println("Water level low: Pump ON");
   }
   delay(2000);
@@ -73,7 +71,7 @@ void setup() {
   pinMode(echo,INPUT);
   pinMode(trigger,OUTPUT);
   pinMode(relay,OUTPUT);
-  digitalWrite(relay,HIGH);
+  digitalWrite(relay,LOW);
 }
 
 void loop() {
@@ -90,15 +88,5 @@ BLYNK_WRITE(V1){
   }
   else{
     digitalWrite(light,HIGH);
-  }
-}
-
-BLYNK_WRITE(V2){
-  bool value = param.asInt(); 
-  if(value==0){
-    digitalWrite(relay,LOW);
-  }
-  else{
-    digitalWrite(relay,HIGH);
   }
 }
